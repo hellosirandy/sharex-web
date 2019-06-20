@@ -6,6 +6,10 @@ import AuthPage from './pages/AuthPage';
 import { checkAuthenticated } from './store/actions/auth';
 
 class App extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    props.onCheckAuthenticated();
+  }
   render() {
     return (
       <div>
