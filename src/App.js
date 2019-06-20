@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import AuthPage from './pages/AuthPage';
 import { checkAuthenticated } from './store/actions/auth';
@@ -12,12 +12,38 @@ class App extends React.PureComponent {
     props.onCheckAuthenticated();
   }
   render() {
+    const { isAuthenticated } = this.props;
     return (
       <div>
         <Router>
           <Switch>
-            <Route path="/signin" component={AuthPage} />
-            <Route path="/" exact component={HomePage} />
+            <Route
+              path="/"
+              exact
+              component={HomePage}
+              render={(p) => {
+                if (isAuthenticated) {
+                  return (<HomePage />);
+                }
+                return (<Redirect to={{ pathname: '/signup', state: { nextPathName: p.location.pathname } }} />);
+              }}
+            />
+            <Route
+              path="/signin"
+              render={({ location }) => {
+                if (isAuthenticated) {
+                  return (
+                    <Redirect
+                      to={
+                        (location.state && location.state.nextPathName) ?
+                          location.state.nextPathName : '/'
+                      }
+                    />
+                  );
+                }
+                return <AuthPage />;
+              }}
+            />
           </Switch>
         </Router>
       </div>
