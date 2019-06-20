@@ -64,7 +64,7 @@ class AuthPage extends React.PureComponent {
               onChange={this.handleInputChange('password')}
             />
           </InputGroup>
-          <Button variant="primary" block type="submit" onClick={this.handleSubmitClick}>Primary</Button>
+          <Button variant="primary" block type="submit" onClick={this.handleSubmitClick}>Sign In</Button>
         </form>
       </div>
     );
