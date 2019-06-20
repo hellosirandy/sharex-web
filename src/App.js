@@ -14,38 +14,36 @@ class App extends React.PureComponent {
   render() {
     const { isAuthenticated } = this.props;
     return (
-      <div>
-        <Router>
-          <Switch>
-            <Route
-              path="/"
-              exact
-              render={(p) => {
-                if (isAuthenticated) {
-                  return (<HomePage />);
-                }
-                return (<Redirect to={{ pathname: '/signin', state: { nextPathName: p.location.pathname } }} />);
-              }}
-            />
-            <Route
-              path="/signin"
-              render={({ location }) => {
-                if (isAuthenticated) {
-                  return (
-                    <Redirect
-                      to={
-                        (location.state && location.state.nextPathName) ?
-                          location.state.nextPathName : '/'
-                      }
-                    />
-                  );
-                }
-                return <AuthPage />;
-              }}
-            />
-          </Switch>
-        </Router>
-      </div>
+      <Router>
+        <Switch>
+          <Route
+            path="/"
+            exact
+            render={(p) => {
+              if (isAuthenticated) {
+                return (<HomePage />);
+              }
+              return (<Redirect to={{ pathname: '/signin', state: { nextPathName: p.location.pathname } }} />);
+            }}
+          />
+          <Route
+            path="/signin"
+            render={({ location }) => {
+              if (isAuthenticated) {
+                return (
+                  <Redirect
+                    to={
+                      (location.state && location.state.nextPathName) ?
+                        location.state.nextPathName : '/'
+                    }
+                  />
+                );
+              }
+              return <AuthPage />;
+            }}
+          />
+        </Switch>
+      </Router>
     );
   }
 }
