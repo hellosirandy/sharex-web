@@ -14,11 +14,11 @@ class NavBar extends React.PureComponent {
   render() {
     return (
       <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/">SharEx</Navbar.Brand>
+        <Navbar.Brand href="/#/">SharEx</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link href="/debts">Debts</Nav.Link>
+            <Nav.Link href="/#/debts">Debts</Nav.Link>
           </Nav>
           <Dropdown navbar alignRight>
             <Dropdown.Toggle variant="light" id="dropdown-basic">
