@@ -88,7 +88,7 @@ AuthPage.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    isLoading: state.ui.isLoading[AUTH_SIGNIN],
+    isLoading: Boolean(state.ui.isLoading[AUTH_SIGNIN]),
   };
 };
 
