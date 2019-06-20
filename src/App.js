@@ -4,6 +4,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import AuthPage from './pages/AuthPage';
 import { checkAuthenticated } from './store/actions/auth';
+import HomePage from './pages/HomePage';
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -16,6 +17,7 @@ class App extends React.PureComponent {
         <Router>
           <Switch>
             <Route path="/signin" component={AuthPage} />
+            <Route path="/" exact component={HomePage} />
           </Switch>
         </Router>
       </div>
