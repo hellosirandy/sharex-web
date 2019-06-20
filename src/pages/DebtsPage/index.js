@@ -29,7 +29,8 @@ class DebtsPage extends React.PureComponent {
                 <thead>
                   <tr>
                     <th>Title</th>
-                    <th>Time</th>
+                    <th>Date</th>
+                    <th>Category</th>
                     <th>Debt</th>
                   </tr>
                 </thead>
@@ -40,6 +41,7 @@ class DebtsPage extends React.PureComponent {
                       <tr key={id}>
                         <td>{expense.title}</td>
                         <td>{moment.utc(expense.date).local().format('MM/DD/YYYY')}</td>
+                        <td>{expense.category}</td>
                         <td>{expense.paid - expense.shouldPay}</td>
                       </tr>
                     );
