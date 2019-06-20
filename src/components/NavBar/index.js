@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Navbar, Nav, Dropdown } from 'react-bootstrap';
 import AccountBox from '@material-ui/icons/AccountBox';
 import { compose } from 'recompose';
-import styles from './styles';
 import { signOut } from '../../store/actions/auth';
 
 class NavBar extends React.PureComponent {
