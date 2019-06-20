@@ -20,12 +20,11 @@ class App extends React.PureComponent {
             <Route
               path="/"
               exact
-              component={HomePage}
               render={(p) => {
                 if (isAuthenticated) {
                   return (<HomePage />);
                 }
-                return (<Redirect to={{ pathname: '/signup', state: { nextPathName: p.location.pathname } }} />);
+                return (<Redirect to={{ pathname: '/signin', state: { nextPathName: p.location.pathname } }} />);
               }}
             />
             <Route
