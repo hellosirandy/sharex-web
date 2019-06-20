@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import { InputGroup, FormControl, Button, Alert } from 'react-bootstrap';
+import { InputGroup, FormControl, Button, Alert, Spinner } from 'react-bootstrap';
 import EmailIcon from '@material-ui/icons/Email';
 import LockIcon from '@material-ui/icons/Lock';
 import styles from './styles';
 import { signIn } from '../../store/actions/auth';
+import { AUTH_SIGNIN } from '../../store/loadingTypes';
 
 class AuthPage extends React.PureComponent {
   state = {
@@ -42,6 +43,7 @@ class AuthPage extends React.PureComponent {
   }
   render() {
     const { errorMsg } = this.state;
+    const { isLoading } = this.props;
     return (
       <div style={styles.container}>
         <form style={styles.inputArea}>
@@ -69,7 +71,10 @@ class AuthPage extends React.PureComponent {
               onChange={this.handleInputChange('password')}
             />
           </InputGroup>
-          <Button variant="primary" block type="submit" onClick={this.handleSubmitClick}>Sign In</Button>
+          <Button variant="primary" block type="submit" onClick={this.handleSubmitClick}>
+            {!isLoading && 'Sign In'}
+            {isLoading && <Spinner animation="border" role="status" size="sm" />}
+          </Button>
         </form>
       </div>
     );
@@ -78,6 +83,13 @@ class AuthPage extends React.PureComponent {
 
 AuthPage.propTypes = {
   onSignIn: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};
+
+const mapStateToProps = (state) => {
+  return {
+    isLoading: state.ui.isLoading[AUTH_SIGNIN],
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -86,4 +98,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(connect(null, mapDispatchToProps))(AuthPage);
+export default compose(connect(mapStateToProps, mapDispatchToProps))(AuthPage);
