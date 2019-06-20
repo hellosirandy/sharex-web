@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import { InputGroup, FormControl, Button } from 'react-bootstrap';
+import { InputGroup, FormControl, Button, Alert } from 'react-bootstrap';
 import EmailIcon from '@material-ui/icons/Email';
 import LockIcon from '@material-ui/icons/Lock';
 import styles from './styles';
@@ -18,6 +18,7 @@ class AuthPage extends React.PureComponent {
         value: '',
       },
     },
+    errorMsg: '',
   }
   handleInputChange = key => ({ target: { value } }) => {
     this.setState(prevState => ({
@@ -33,18 +34,22 @@ class AuthPage extends React.PureComponent {
   handleSubmitClick = async (event) => {
     event.preventDefault();
     const { controls: { email, password } } = this.state;
-    this.props.onSignIn(email.value, password.value);
-    // try {
-    //   await this.props.onSignIn(email.value, password.value);
-    //   this.props.navigation.navigate('AppStack');
-    // } catch (e) {
-    //   this.setState({ errorMsg: e });
-    // }
+    try {
+      await this.props.onSignIn(email.value, password.value);
+    } catch (e) {
+      this.setState({ errorMsg: e });
+    }
   }
   render() {
+    const { errorMsg } = this.state;
     return (
       <div style={styles.container}>
         <form style={styles.inputArea}>
+          {errorMsg &&
+            <Alert variant="danger">
+              {errorMsg}
+            </Alert>
+          }
           <InputGroup className="mb-3">
             <InputGroup.Prepend>
               <InputGroup.Text><EmailIcon /></InputGroup.Text>
