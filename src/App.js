@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import AuthPage from './pages/AuthPage';
 import { checkAuthenticated } from './store/actions/auth';
 import HomePage from './pages/HomePage';
+import DebtsPage from './pages/DebtsPage';
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -31,7 +32,7 @@ class App extends React.PureComponent {
             exact
             render={(p) => {
               if (isAuthenticated) {
-                return (<HomePage />);
+                return (<DebtsPage />);
               }
               return (<Redirect to={{ pathname: '/signin', state: { nextPathName: p.location.pathname } }} />);
             }}
