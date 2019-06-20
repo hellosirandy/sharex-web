@@ -49,7 +49,6 @@ export const checkAuthenticated = () => {
     try {
       const { token, email } = await checkAuthenticatedAPI();
       const { auth: { token: oldToken } } = getState();
-      console.log(token);
       if (token !== oldToken) {
         dispatch(setAuthenticated(token, email));
       }
