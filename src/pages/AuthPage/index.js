@@ -33,7 +33,6 @@ class AuthPage extends React.PureComponent {
   handleSubmitClick = async (event) => {
     event.preventDefault();
     const { controls: { email, password } } = this.state;
-    console.log(email, password);
     this.props.onSignIn(email.value, password.value);
     // try {
     //   await this.props.onSignIn(email.value, password.value);
