@@ -17,8 +17,10 @@ class App extends React.PureComponent {
     this.initialLoad();
   }
   initialLoad = async () => {
-    await this.props.onCheckAuthenticated();
-    await this.props.onGetCouple();
+    const token = await this.props.onCheckAuthenticated();
+    if (token) {
+      await this.props.onGetCouple();
+    }
     this.setState({ loaded: true });
   }
   render() {
