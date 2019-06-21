@@ -6,10 +6,24 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { compose } from 'recompose';
 import styles from './styles';
-import { validate } from '../../utils/validation';
+import { validate, validateForm } from '../../utils/validation';
 import { createExpense } from '../../store/actions/expense';
 import { EXPENSE_CREATING } from '../../store/loadingTypes';
 
+const categories = [
+  'food',
+  'grocery',
+  'alcohol',
+  'entertainment',
+  'love',
+  'life',
+  'transit',
+  'shopping',
+  'coffee',
+  'rent',
+  'gift',
+  'others',
+];
 class NewExpenseForm extends React.PureComponent {
   state = {
     controls: {
@@ -43,7 +57,7 @@ class NewExpenseForm extends React.PureComponent {
         validationRules: [],
       },
       category: {
-        value: '',
+        value: 'others',
         valid: false,
         validationRules: [],
       },
@@ -106,11 +120,9 @@ class NewExpenseForm extends React.PureComponent {
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <FormControl
-            placeholder="Category"
-            onChange={this.handleInputChange('category')}
-            value={category.value}
-          />
+          <Form.Control as="select" onChange={this.handleInputChange('category')} value={category.value}>
+            {categories.map(c => <option value={c}>{c}</option>)}
+          </Form.Control>
         </Form.Group>
         <Form.Group className="mb-3">
           <DatePicker
