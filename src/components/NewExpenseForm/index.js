@@ -1,11 +1,14 @@
 import React from 'react';
 import { Form, FormControl, Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { compose } from 'recompose';
 import styles from './styles';
 import { validate } from '../../utils/validation';
+import { createExpense } from '../../store/actions/expense';
+import { EXPENSE_CREATING } from '../../store/loadingTypes';
 
 class NewExpenseForm extends React.PureComponent {
   state = {
@@ -132,4 +135,16 @@ class NewExpenseForm extends React.PureComponent {
 NewExpenseForm.propTypes = {
 };
 
-export default compose()(NewExpenseForm);
+const mapStateToProps = (state) => {
+  return {
+    isLoading: Boolean(state.ui.isLoading[EXPENSE_CREATING]),
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onCreateExpense: options => dispatch(createExpense(options)),
+  };
+};
+
+export default compose(connect(mapStateToProps, mapDispatchToProps))(NewExpenseForm);
