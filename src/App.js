@@ -6,55 +6,67 @@ import AuthPage from './pages/AuthPage';
 import { checkAuthenticated } from './store/actions/auth';
 import HomePage from './pages/HomePage';
 import DebtsPage from './pages/DebtsPage';
+import { getCouple } from './store/actions/couple';
 
 class App extends React.PureComponent {
   constructor(props) {
     super(props);
-    props.onCheckAuthenticated();
+    this.state = {
+      loaded: false,
+    };
+    this.initialLoad();
+  }
+  initialLoad = async () => {
+    await this.props.onCheckAuthenticated();
+    await this.props.onGetCouple();
+    this.setState({ loaded: true });
   }
   render() {
     const { isAuthenticated } = this.props;
+    const { loaded } = this.state;
     return (
-      <Router>
-        <Switch>
-          <Route
-            path="/"
-            exact
-            render={(p) => {
-              if (isAuthenticated) {
-                return (<HomePage />);
-              }
-              return (<Redirect to={{ pathname: '/signin', state: { nextPathName: p.location.pathname } }} />);
-            }}
-          />
-          <Route
-            path="/debts"
-            exact
-            render={(p) => {
-              if (isAuthenticated) {
-                return (<DebtsPage />);
-              }
-              return (<Redirect to={{ pathname: '/signin', state: { nextPathName: p.location.pathname } }} />);
-            }}
-          />
-          <Route
-            path="/signin"
-            render={({ location }) => {
-              if (isAuthenticated) {
-                return (
-                  <Redirect
-                    to={
-                      (location.state && location.state.nextPathName) ?
-                        location.state.nextPathName : '/'
-                    }
-                  />
-                );
-              }
-              return <AuthPage />;
-            }}
-          />
-        </Switch>
-      </Router>
+      loaded ? (
+        <Router>
+          <Switch>
+            <Route
+              path="/"
+              exact
+              render={(p) => {
+                if (isAuthenticated) {
+                  return (<HomePage />);
+                }
+                return (<Redirect to={{ pathname: '/signin', state: { nextPathName: p.location.pathname } }} />);
+              }}
+            />
+            <Route
+              path="/debts"
+              exact
+              render={(p) => {
+                if (isAuthenticated) {
+                  return (<DebtsPage />);
+                }
+                return (<Redirect to={{ pathname: '/signin', state: { nextPathName: p.location.pathname } }} />);
+              }}
+            />
+            <Route
+              path="/signin"
+              render={({ location }) => {
+                if (isAuthenticated) {
+                  return (
+                    <Redirect
+                      to={
+                        (location.state && location.state.nextPathName) ?
+                          location.state.nextPathName : '/'
+                      }
+                    />
+                  );
+                }
+                return <AuthPage />;
+              }}
+            />
+          </Switch>
+        </Router>
+      ) : <div />
     );
   }
 }
@@ -62,6 +74,7 @@ class App extends React.PureComponent {
 App.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   onCheckAuthenticated: PropTypes.func.isRequired,
+  onGetCouple: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -72,6 +85,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    onGetCouple: () => dispatch(getCouple()),
     onCheckAuthenticated: () => dispatch(checkAuthenticated()),
   };
 };
