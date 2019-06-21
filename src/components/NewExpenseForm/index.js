@@ -25,46 +25,48 @@ const categories = [
   'gift',
   'others',
 ];
-class NewExpenseForm extends React.PureComponent {
-  state = {
-    controls: {
-      title: {
-        value: '',
-        valid: false,
-        validationRules: ['notEmpty'],
-        errMsg: 'Title cannot be empty',
-      },
-      total: {
-        value: 0,
-        valid: true,
-        validationRules: ['notEmpty', 'isNumber'],
-        errMsg: 'Total must be given a number',
-      },
-      paid: {
-        value: 0,
-        valid: true,
-        validationRules: ['notEmpty', 'isNumber'],
-        errMsg: 'Paid must be given a number',
-      },
-      shouldPay: {
-        value: 0,
-        valid: true,
-        validationRules: ['notEmpty', 'isNumber'],
-        errMsg: 'Should pay must be given a number',
-      },
-      date: {
-        value: moment(new Date().getTime()).format('L'),
-        valid: true,
-        validationRules: [],
-      },
-      category: {
-        value: 'others',
-        valid: false,
-        validationRules: [],
-      },
+
+const initialState = {
+  controls: {
+    title: {
+      value: '',
+      valid: false,
+      validationRules: ['notEmpty'],
+      errMsg: 'Title cannot be empty',
     },
-    submitted: false,
-  }
+    total: {
+      value: 0,
+      valid: true,
+      validationRules: ['notEmpty', 'isNumber'],
+      errMsg: 'Total must be given a number',
+    },
+    paid: {
+      value: 0,
+      valid: true,
+      validationRules: ['notEmpty', 'isNumber'],
+      errMsg: 'Paid must be given a number',
+    },
+    shouldPay: {
+      value: 0,
+      valid: true,
+      validationRules: ['notEmpty', 'isNumber'],
+      errMsg: 'Should pay must be given a number',
+    },
+    date: {
+      value: moment(new Date().getTime()).format('L'),
+      valid: true,
+      validationRules: [],
+    },
+    category: {
+      value: 'others',
+      valid: false,
+      validationRules: [],
+    },
+  },
+  submitted: false,
+};
+class NewExpenseForm extends React.PureComponent {
+  state = initialState;
   handleInputChange = key => ({ target: { value } }) => {
     this.setState(prevState => ({
       ...prevState,
@@ -96,6 +98,7 @@ class NewExpenseForm extends React.PureComponent {
         date: new Date(date.value).getTime(),
         category: category.value,
       });
+      this.setState(initialState);
     }
   }
   render() {
