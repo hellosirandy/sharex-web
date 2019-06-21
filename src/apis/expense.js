@@ -1,6 +1,6 @@
 import API from '@hellosirandy/rest-api-wrapper';
 
-const api = new API('https://j5haq78dsa.execute-api.us-east-1.amazonaws.com/dev');
+const api = new API(process.env.REACT_APP_URL);
 
 export const createExpenseAPI = (token, body) => {
   return api.post('/couple/expense', token, body);

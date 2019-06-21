@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form, FormControl, Button } from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import { Form, FormControl, Button, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
@@ -77,12 +78,33 @@ class NewExpenseForm extends React.PureComponent {
       },
     }));
   }
+  handleSubmitPress = async (event) => {
+    event.preventDefault();
+    this.setState({ submitted: true });
+    const valid = validateForm(this.state.controls, ['title', 'total', 'paid', 'shouldPay']);
+    if (valid) {
+      const {
+        controls: {
+          title, total, paid, shouldPay, date, category,
+        },
+      } = this.state;
+      await this.props.onCreateExpense({
+        title: title.value,
+        total: Number(total.value),
+        paid: Number(paid.value),
+        shouldPay: Number(shouldPay.value),
+        date: new Date(date.value).getTime(),
+        category: category.value,
+      });
+    }
+  }
   render() {
     const {
       controls: {
         title, total, paid, shouldPay, category, date,
       },
     } = this.state;
+    const { isLoading } = this.props;
     return (
       <div style={styles.container}>
         <h4 style={styles.heading}>
@@ -121,7 +143,7 @@ class NewExpenseForm extends React.PureComponent {
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Control as="select" onChange={this.handleInputChange('category')} value={category.value}>
-            {categories.map(c => <option value={c}>{c}</option>)}
+            {categories.map(c => <option key={c} value={c}>{c}</option>)}
           </Form.Control>
         </Form.Group>
         <Form.Group className="mb-3">
@@ -132,12 +154,13 @@ class NewExpenseForm extends React.PureComponent {
             }
             selected={new Date(date.value)}
             value={date.value}
-            onChange={event => this.handleInputChange('date')(moment(event).format('L'))}
+            onChange={event => this.handleInputChange('date')({ target: { value: moment(event).format('L') } })}
             placeholderText="Date"
           />
         </Form.Group>
-        <Button variant="primary" block type="submit">
-          Submit
+        <Button variant="primary" block type="submit" onClick={this.handleSubmitPress}>
+          {!isLoading && 'Submit'}
+          {isLoading && <Spinner animation="border" role="status" size="sm" />}
         </Button>
       </div>
     );
@@ -145,6 +168,8 @@ class NewExpenseForm extends React.PureComponent {
 }
 
 NewExpenseForm.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
+  onCreateExpense: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
