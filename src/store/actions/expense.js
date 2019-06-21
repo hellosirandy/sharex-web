@@ -1,8 +1,28 @@
-import { getExpenseAPI } from '../../apis/expense';
+import { getExpenseAPI, createExpenseAPI } from '../../apis/expense';
 import { checkAuthenticated } from './auth';
 import { uiStartLoading, uiStopLoading } from './ui';
-import { EXPENSE_GETTING } from '../loadingTypes';
-import { EXPENSE_SET_EXPENSE } from '../actionTypes';
+import { EXPENSE_GETTING, EXPENSE_CREATING } from '../loadingTypes';
+import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE } from '../actionTypes';
+
+export const createExpense = (options) => {
+  return async (dispatch, getState) => {
+    dispatch(uiStartLoading(EXPENSE_CREATING));
+    const token = await dispatch(checkAuthenticated());
+    const { couple } = getState().couple;
+    const body = makeExpense({
+      ...options,
+      couple,
+    });
+    try {
+      const newExpense = await createExpenseAPI(token, body);
+      dispatch(appendExpense(newExpense));
+      dispatch(uiStopLoading(EXPENSE_CREATING));
+    } catch (e) {
+      console.log(e);
+      dispatch(uiStopLoading(EXPENSE_CREATING));
+    }
+  };
+};
 
 export const getExpense = () => {
   return async (dispatch) => {
@@ -35,3 +55,33 @@ const setExpense = (expenseIds, expenseTable, total) => {
   };
 };
 
+const makeExpense = (options) => {
+  const {
+    couple, paid, shouldPay, total, title, date, expenseId, category,
+  } = options;
+  const data = {
+    [couple.you.email]: {
+      paid,
+      shouldPay,
+    },
+    [couple.partner.email]: {
+      paid: total - paid,
+      shouldPay: total - shouldPay,
+    },
+  };
+  return {
+    title,
+    coupleId: couple.id,
+    date,
+    data,
+    expenseId,
+    category,
+  };
+};
+
+const appendExpense = (expense) => {
+  return {
+    type: EXPENSE_APPEND_EXPENSE,
+    expense,
+  };
+};
