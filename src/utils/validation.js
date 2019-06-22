@@ -46,11 +46,9 @@ const notEmptyValidator = (val) => {
 };
 
 export const validateForm = (controls, keys = []) => {
-  let success = true;
   keys.forEach((key) => {
     if (!controls[key].valid) {
-      success = false;
+      throw String(controls[key].errMsg);
     }
   });
-  return success;
 };

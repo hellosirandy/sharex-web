@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, FormControl, Button, Spinner } from 'react-bootstrap';
+import { Form, FormControl, Button, Spinner, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
@@ -63,6 +63,7 @@ const initialState = {
       validationRules: [],
     },
   },
+  errMsg: '',
   submitted: false,
 };
 class NewExpenseForm extends React.PureComponent {
@@ -83,22 +84,26 @@ class NewExpenseForm extends React.PureComponent {
   handleSubmitPress = async (event) => {
     event.preventDefault();
     this.setState({ submitted: true });
-    const valid = validateForm(this.state.controls, ['title', 'total', 'paid', 'shouldPay']);
-    if (valid) {
-      const {
-        controls: {
-          title, total, paid, shouldPay, date, category,
-        },
-      } = this.state;
-      await this.props.onCreateExpense({
-        title: title.value,
-        total: Number(total.value),
-        paid: Number(paid.value),
-        shouldPay: Number(shouldPay.value),
-        date: new Date(date.value).getTime(),
-        category: category.value,
-      });
-      this.setState(initialState);
+    try {
+      const valid = validateForm(this.state.controls, ['title', 'total', 'paid', 'shouldPay']);
+      if (valid) {
+        const {
+          controls: {
+            title, total, paid, shouldPay, date, category,
+          },
+        } = this.state;
+        await this.props.onCreateExpense({
+          title: title.value,
+          total: Number(total.value),
+          paid: Number(paid.value),
+          shouldPay: Number(shouldPay.value),
+          date: new Date(date.value).getTime(),
+          category: category.value,
+        });
+        this.setState(initialState);
+      }
+    } catch (e) {
+      this.setState({ errMsg: e });
     }
   }
   render() {
@@ -106,6 +111,7 @@ class NewExpenseForm extends React.PureComponent {
       controls: {
         title, total, paid, shouldPay, category, date,
       },
+      errMsg,
     } = this.state;
     const { isLoading } = this.props;
     return (
@@ -114,6 +120,17 @@ class NewExpenseForm extends React.PureComponent {
           New Expense
         </h4>
         <Form.Group className="mb-3">
+          {errMsg &&
+            <Alert variant="danger">
+              {errMsg}
+            </Alert>
+          }
+          <Alert variant="danger">
+            asdf
+          </Alert>
+          <Alert variant="danger">
+            asdf
+          </Alert>
           <Form.Label>Title</Form.Label>
           <FormControl
             placeholder="Title"
