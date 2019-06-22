@@ -125,12 +125,6 @@ class NewExpenseForm extends React.PureComponent {
               {errMsg}
             </Alert>
           }
-          <Alert variant="danger">
-            asdf
-          </Alert>
-          <Alert variant="danger">
-            asdf
-          </Alert>
           <Form.Label>Title</Form.Label>
           <FormControl
             placeholder="Title"

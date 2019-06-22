@@ -1,7 +1,7 @@
 export default {
   col: {
-    padding: 0,
     overflow: 'scroll',
+    height: 'calc(100vh - 56px)',
   },
 };
 
