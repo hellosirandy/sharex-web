@@ -1,9 +1,10 @@
-import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE } from '../actionTypes';
+import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE, EXPENSE_SET_UPDATE } from '../actionTypes';
 
 const initialState = {
   expenseIds: [],
   expenseTable: {},
   total: 0,
+  updating: '',
 };
 
 const reducer = (state = initialState, action) => {
@@ -31,6 +32,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         expenseIds,
         total: parseFloat(total.toFixed(3)),
+      };
+    case EXPENSE_SET_UPDATE:
+      return {
+        ...state,
+        updating: action.expenseId,
       };
     default:
       return state;

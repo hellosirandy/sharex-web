@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
-import { deleteExpense } from '../../store/actions/expense';
+import { deleteExpense, setUpdating } from '../../store/actions/expense';
 
 const columns = [{
   dataField: 'id',
@@ -34,7 +34,6 @@ class DebtsTable extends React.PureComponent {
     this.setState({ selected: row.id });
   }
   handleDeleteClick = () => {
-    console.log(this.state.selected);
     this.setState({ showDeleteModal: true });
   }
   handleModalClose = () => {
@@ -43,6 +42,9 @@ class DebtsTable extends React.PureComponent {
   handleDeleteConfirmed = async () => {
     await this.props.onDeleteExpense(this.state.selected);
     this.handleModalClose();
+  }
+  handleEditClick = () => {
+    this.props.onSetUpdating(this.state.selected);
   }
   render() {
     const selectRow = {
@@ -54,7 +56,7 @@ class DebtsTable extends React.PureComponent {
     return (
       <React.Fragment>
         <ButtonToolbar style={{ paddingTop: 10, paddingBottom: 10 }}>
-          <Button className="mr-2" variant="primary" size="sm">Edit</Button>
+          <Button disabled={!this.state.selected} className="mr-2" variant="primary" size="sm" onClick={this.handleEditClick}>Edit</Button>
           <Button disabled={!this.state.selected} className="mr-2" variant="danger" size="sm" onClick={this.handleDeleteClick}>Delete</Button>
         </ButtonToolbar>
         <BootstrapTable keyField="id" columns={columns} data={this.props.expenses} selectRow={selectRow} />
@@ -80,11 +82,13 @@ class DebtsTable extends React.PureComponent {
 DebtsTable.propTypes = {
   expenses: PropTypes.array.isRequired,
   onDeleteExpense: PropTypes.func.isRequired,
+  onSetUpdating: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onDeleteExpense: id => dispatch(deleteExpense(id)),
+    onSetUpdating: id => dispatch(setUpdating(id)),
   };
 };
 

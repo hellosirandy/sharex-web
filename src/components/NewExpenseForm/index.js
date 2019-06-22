@@ -37,19 +37,19 @@ const initialState = {
     total: {
       value: 0,
       valid: true,
-      validationRules: ['notEmpty', 'isNumber'],
+      validationRules: ['isNumber'],
       errMsg: 'Total must be given a number',
     },
     paid: {
       value: 0,
       valid: true,
-      validationRules: ['notEmpty', 'isNumber'],
+      validationRules: ['isNumber'],
       errMsg: 'Paid must be given a number',
     },
     shouldPay: {
       value: 0,
       valid: true,
-      validationRules: ['notEmpty', 'isNumber'],
+      validationRules: ['isNumber'],
       errMsg: 'Should pay must be given a number',
     },
     date: {
@@ -64,10 +64,52 @@ const initialState = {
     },
   },
   errMsg: '',
-  submitted: false,
+  status: 'create',
 };
 class NewExpenseForm extends React.PureComponent {
   state = initialState;
+  componentDidUpdate(prevProps) {
+    const { updating, expenseTable } = this.props;
+    if (prevProps.updating !== updating) {
+      const expense = expenseTable[updating];
+      this.setState(prevState => ({
+        ...prevState,
+        controls: {
+          ...prevState.controls,
+          title: {
+            ...prevState.controls.title,
+            value: expense.title,
+            valid: validate(expense.title, prevState.controls.title.validationRules),
+          },
+          total: {
+            ...prevState.controls.total,
+            value: expense.total,
+            valid: validate(expense.total, prevState.controls.total.validationRules),
+          },
+          paid: {
+            ...prevState.controls.paid,
+            value: expense.paid,
+            valid: validate(expense.paid, prevState.controls.paid.validationRules),
+          },
+          shouldPay: {
+            ...prevState.controls.shouldPay,
+            value: expense.shouldPay,
+            valid: validate(expense.shouldPay, prevState.controls.shouldPay.validationRules),
+          },
+          date: {
+            ...prevState.controls.date,
+            value: expense.date,
+            valid: validate(expense.date, prevState.controls.date.validationRules),
+          },
+          category: {
+            ...prevState.controls.category,
+            value: expense.category,
+            valid: validate(expense.category, prevState.controls.category.validationRules),
+          },
+        },
+      }));
+    }
+  }
   handleInputChange = key => ({ target: { value } }) => {
     this.setState(prevState => ({
       ...prevState,
@@ -83,7 +125,6 @@ class NewExpenseForm extends React.PureComponent {
   }
   handleSubmitPress = async (event) => {
     event.preventDefault();
-    this.setState({ submitted: true });
     try {
       validateForm(this.state.controls, ['title', 'total', 'paid', 'shouldPay']);
       const {
@@ -188,11 +229,15 @@ class NewExpenseForm extends React.PureComponent {
 NewExpenseForm.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   onCreateExpense: PropTypes.func.isRequired,
+  expenseTable: PropTypes.object.isRequired,
+  updating: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
     isLoading: Boolean(state.ui.isLoading[EXPENSE_CREATING]),
+    expenseTable: state.expense.expenseTable,
+    updating: state.expense.updating,
   };
 };
 

@@ -2,7 +2,7 @@ import { getExpenseAPI, createExpenseAPI, deleteExpenseAPI } from '../../apis/ex
 import { checkAuthenticated } from './auth';
 import { uiStartLoading, uiStopLoading } from './ui';
 import { EXPENSE_GETTING, EXPENSE_CREATING, EXPENSE_DELETING } from '../loadingTypes';
-import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE } from '../actionTypes';
+import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE, EXPENSE_SET_UPDATE } from '../actionTypes';
 
 export const createExpense = (options) => {
   return async (dispatch, getState) => {
@@ -65,6 +65,15 @@ export const deleteExpense = (expenseId) => {
       console.log(e);
       dispatch(uiStopLoading(EXPENSE_DELETING));
     }
+  };
+};
+
+export const setUpdating = (expenseId) => {
+  return (dispatch) => {
+    dispatch({
+      type: EXPENSE_SET_UPDATE,
+      expenseId,
+    });
   };
 };
 
