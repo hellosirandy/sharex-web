@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { compose } from 'recompose';
 import { Button, ButtonToolbar } from 'react-bootstrap';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
@@ -52,6 +53,7 @@ class DebtsTable extends React.PureComponent {
 }
 
 DebtsTable.propTypes = {
+  expenses: PropTypes.array.isRequired,
 };
 
 export default compose()(DebtsTable);
