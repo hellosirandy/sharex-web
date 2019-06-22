@@ -3,7 +3,12 @@ import API from '@hellosirandy/rest-api-wrapper';
 const api = new API(process.env.REACT_APP_URL);
 
 export const createExpenseAPI = (token, body) => {
-  return api.post('/couple/expense', token, body);
+  const options = {
+    endpoint: '/couple/expense',
+    token,
+    body,
+  };
+  return api.post(options);
 };
 
 export const updateExpenseAPI = (token, body) => {
@@ -18,7 +23,6 @@ export const deleteExpenseAPI = (token, expenseId) => {
       expenseId,
     },
   };
-  console.log(options);
   return api.delete(options);
 };
 
