@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
-import { Table, Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import moment from 'moment';
 import styles from './styles';
 import NavBar from '../../components/NavBar';
@@ -31,29 +31,6 @@ class DebtsPage extends React.PureComponent {
               <NewExpenseForm />
             </Col>
             <Col style={{ ...styles.col, padding: 0 }}>
-              {/* <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>Title</th>
-                    <th>Date</th>
-                    <th>Category</th>
-                    <th>Debt</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {expenseIds.map((id) => {
-                    const expense = expenseTable[id];
-                    return (
-                      <tr key={id}>
-                        <td>{expense.title}</td>
-                        <td>{moment.utc(expense.date).local().format('MM/DD/YYYY')}</td>
-                        <td>{expense.category}</td>
-                        <td>{expense.paid - expense.shouldPay}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </Table> */}
               <DebtsTable expenses={expenses} />
             </Col>
           </Row>
