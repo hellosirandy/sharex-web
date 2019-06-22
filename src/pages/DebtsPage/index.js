@@ -8,6 +8,7 @@ import styles from './styles';
 import NavBar from '../../components/NavBar';
 import { getExpense } from '../../store/actions/expense';
 import NewExpenseForm from '../../components/NewExpenseForm';
+import DebtsTable from '../../components/DebtsTable';
 
 class DebtsPage extends React.PureComponent {
   constructor(props) {
@@ -16,6 +17,11 @@ class DebtsPage extends React.PureComponent {
   }
   render() {
     const { expenseIds, expenseTable } = this.props;
+    const expenses = expenseIds.map(id => ({
+      ...expenseTable[id],
+      date: moment.utc(expenseTable[id].date).local().format('MM/DD/YYYY'),
+      debt: expenseTable[id].paid - expenseTable[id].shouldPay,
+    }));
     return (
       <React.Fragment>
         <NavBar />
@@ -25,7 +31,7 @@ class DebtsPage extends React.PureComponent {
               <NewExpenseForm />
             </Col>
             <Col style={{ ...styles.col, padding: 0 }}>
-              <Table striped bordered hover>
+              {/* <Table striped bordered hover>
                 <thead>
                   <tr>
                     <th>Title</th>
@@ -47,7 +53,8 @@ class DebtsPage extends React.PureComponent {
                     );
                   })}
                 </tbody>
-              </Table>
+              </Table> */}
+              <DebtsTable expenses={expenses} />
             </Col>
           </Row>
         </Container>
