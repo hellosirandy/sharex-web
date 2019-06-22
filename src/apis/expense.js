@@ -11,13 +11,22 @@ export const updateExpenseAPI = (token, body) => {
 };
 
 export const deleteExpenseAPI = (token, expenseId) => {
-  const params = {
-    expenseId,
+  const options = {
+    endpoint: '/couple/expense',
+    token,
+    params: {
+      expenseId,
+    },
   };
-  return api.delete('/couple/expense', token, params);
+  console.log(options);
+  return api.delete(options);
 };
 
 export const getExpenseAPI = (token) => {
-  return api.get('/couple/expense', token);
+  const options = {
+    endpoint: '/couple/expense',
+    token,
+  };
+  return api.get(options);
 };
 

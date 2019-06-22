@@ -85,23 +85,21 @@ class NewExpenseForm extends React.PureComponent {
     event.preventDefault();
     this.setState({ submitted: true });
     try {
-      const valid = validateForm(this.state.controls, ['title', 'total', 'paid', 'shouldPay']);
-      if (valid) {
-        const {
-          controls: {
-            title, total, paid, shouldPay, date, category,
-          },
-        } = this.state;
-        await this.props.onCreateExpense({
-          title: title.value,
-          total: Number(total.value),
-          paid: Number(paid.value),
-          shouldPay: Number(shouldPay.value),
-          date: new Date(date.value).getTime(),
-          category: category.value,
-        });
-        this.setState(initialState);
-      }
+      validateForm(this.state.controls, ['title', 'total', 'paid', 'shouldPay']);
+      const {
+        controls: {
+          title, total, paid, shouldPay, date, category,
+        },
+      } = this.state;
+      await this.props.onCreateExpense({
+        title: title.value,
+        total: Number(total.value),
+        paid: Number(paid.value),
+        shouldPay: Number(shouldPay.value),
+        date: new Date(date.value).getTime(),
+        category: category.value,
+      });
+      this.setState(initialState);
     } catch (e) {
       this.setState({ errMsg: e });
     }

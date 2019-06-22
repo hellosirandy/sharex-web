@@ -1,8 +1,8 @@
-import { getExpenseAPI, createExpenseAPI } from '../../apis/expense';
+import { getExpenseAPI, createExpenseAPI, deleteExpenseAPI } from '../../apis/expense';
 import { checkAuthenticated } from './auth';
 import { uiStartLoading, uiStopLoading } from './ui';
-import { EXPENSE_GETTING, EXPENSE_CREATING } from '../loadingTypes';
-import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE } from '../actionTypes';
+import { EXPENSE_GETTING, EXPENSE_CREATING, EXPENSE_DELETING } from '../loadingTypes';
+import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE } from '../actionTypes';
 
 export const createExpense = (options) => {
   return async (dispatch, getState) => {
@@ -43,6 +43,28 @@ export const getExpense = () => {
       dispatch(uiStopLoading(EXPENSE_GETTING));
     }
     dispatch(uiStopLoading(EXPENSE_GETTING));
+  };
+};
+
+export const deleteExpense = (expenseId) => {
+  return async (dispatch, getState) => {
+    const token = await dispatch(checkAuthenticated());
+    dispatch(uiStartLoading(EXPENSE_DELETING));
+    try {
+      await deleteExpenseAPI(token, expenseId);
+      dispatch(uiStopLoading(EXPENSE_DELETING));
+      const { expenseIds, expenseTable } = getState().expense;
+      const deletedExpense = expenseTable[expenseId];
+      delete expenseTable[expenseId];
+      dispatch({
+        type: EXPENSE_DELETE_EXPENSE,
+        expenseIds,
+        deletedExpense,
+      });
+    } catch (e) {
+      console.log(e);
+      dispatch(uiStopLoading(EXPENSE_DELETING));
+    }
   };
 };
 
