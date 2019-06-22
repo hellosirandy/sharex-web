@@ -114,6 +114,7 @@ class NewExpenseForm extends React.PureComponent {
           New Expense
         </h4>
         <Form.Group className="mb-3">
+          <Form.Label>Title</Form.Label>
           <FormControl
             placeholder="Title"
             onChange={this.handleInputChange('title')}
@@ -121,6 +122,7 @@ class NewExpenseForm extends React.PureComponent {
           />
         </Form.Group>
         <Form.Group className="mb-3">
+          <Form.Label>Total</Form.Label>
           <FormControl
             placeholder="Total"
             type="number"
@@ -129,6 +131,7 @@ class NewExpenseForm extends React.PureComponent {
           />
         </Form.Group>
         <Form.Group className="mb-3">
+          <Form.Label>You paid</Form.Label>
           <FormControl
             placeholder="You paid"
             type="number"
@@ -137,6 +140,7 @@ class NewExpenseForm extends React.PureComponent {
           />
         </Form.Group>
         <Form.Group className="mb-3">
+          <Form.Label>You should pay</Form.Label>
           <FormControl
             placeholder="You should pay"
             type="number"
@@ -145,11 +149,13 @@ class NewExpenseForm extends React.PureComponent {
           />
         </Form.Group>
         <Form.Group className="mb-3">
+          <Form.Label>Category</Form.Label>
           <Form.Control as="select" onChange={this.handleInputChange('category')} value={category.value}>
             {categories.map(c => <option key={c} value={c}>{c}</option>)}
           </Form.Control>
         </Form.Group>
         <Form.Group className="mb-3">
+          <Form.Label>Date</Form.Label>
           <DatePicker
             style={{ width: '100%' }}
             customInput={
