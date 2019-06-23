@@ -7,6 +7,7 @@ import { checkAuthenticated } from './store/actions/auth';
 import HomePage from './pages/HomePage';
 import DebtsPage from './pages/DebtsPage';
 import { getCouple } from './store/actions/couple';
+import { getExpense } from './store/actions/expense';
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -19,7 +20,10 @@ class App extends React.PureComponent {
   initialLoad = async () => {
     const token = await this.props.onCheckAuthenticated();
     if (token) {
-      await this.props.onGetCouple();
+      await Promise.all([
+        this.props.onGetCouple(),
+        this.props.onGetExpense(),
+      ]);
     }
     this.setState({ loaded: true });
   }
@@ -77,6 +81,7 @@ App.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   onCheckAuthenticated: PropTypes.func.isRequired,
   onGetCouple: PropTypes.func.isRequired,
+  onGetExpense: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -89,6 +94,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onGetCouple: () => dispatch(getCouple()),
     onCheckAuthenticated: () => dispatch(checkAuthenticated()),
+    onGetExpense: () => dispatch(getExpense()),
   };
 };
 

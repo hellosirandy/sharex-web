@@ -6,15 +6,10 @@ import { Container, Row, Col } from 'react-bootstrap';
 import moment from 'moment';
 import styles from './styles';
 import NavBar from '../../components/NavBar';
-import { getExpense } from '../../store/actions/expense';
 import NewExpenseForm from '../../components/NewExpenseForm';
 import DebtsTable from '../../components/DebtsTable';
 
 class DebtsPage extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    props.onGetExpense();
-  }
   render() {
     const { expenseIds, expenseTable } = this.props;
     const expenses = expenseIds.map(id => ({
@@ -43,7 +38,6 @@ class DebtsPage extends React.PureComponent {
 DebtsPage.propTypes = {
   expenseIds: PropTypes.array.isRequired,
   expenseTable: PropTypes.object.isRequired,
-  onGetExpense: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -53,10 +47,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    onGetExpense: () => dispatch(getExpense()),
-  };
-};
-
-export default compose(connect(mapStateToProps, mapDispatchToProps))(DebtsPage);
+export default compose(connect(mapStateToProps))(DebtsPage);
