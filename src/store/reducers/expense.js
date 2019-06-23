@@ -1,4 +1,4 @@
-import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE, EXPENSE_SET_UPDATE } from '../actionTypes';
+import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE, EXPENSE_SET_UPDATE, EXPENSE_UPDATE_EXPENSE } from '../actionTypes';
 
 const initialState = {
   expenseIds: [],
@@ -23,6 +23,19 @@ const reducer = (state = initialState, action) => {
         expenseIds: [action.expense.id, ...state.expenseIds],
         expenseTable: { ...state.expenseTable, [action.expense.id]: action.expense },
         total: state.total + (action.expense.paid - action.expense.shouldPay),
+      };
+    case EXPENSE_UPDATE_EXPENSE:
+      const prevExpense = state.expenseTable[action.updatedExpense.id];
+      const prevDiff = prevExpense.paid - prevExpense.shouldPay;
+      const updatedDiff = action.updatedExpense.paid - action.updatedExpense.shouldPay;
+      total = state.total - prevDiff + updatedDiff;
+      return {
+        ...state,
+        expenseTable: {
+          ...state.expenseTable,
+          [action.updatedExpense.id]: action.updatedExpense,
+        },
+        total: parseFloat(total.toFixed(3)),
       };
     case EXPENSE_DELETE_EXPENSE:
       const expenseIds =

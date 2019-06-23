@@ -1,8 +1,8 @@
-import { getExpenseAPI, createExpenseAPI, deleteExpenseAPI } from '../../apis/expense';
+import { getExpenseAPI, createExpenseAPI, deleteExpenseAPI, updateExpenseAPI } from '../../apis/expense';
 import { checkAuthenticated } from './auth';
 import { uiStartLoading, uiStopLoading } from './ui';
 import { EXPENSE_GETTING, EXPENSE_CREATING, EXPENSE_DELETING } from '../loadingTypes';
-import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE, EXPENSE_SET_UPDATE } from '../actionTypes';
+import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE, EXPENSE_SET_UPDATE, EXPENSE_UPDATE_EXPENSE } from '../actionTypes';
 
 export const createExpense = (options) => {
   return async (dispatch, getState) => {
@@ -74,6 +74,29 @@ export const setUpdating = (expenseId) => {
       type: EXPENSE_SET_UPDATE,
       expenseId,
     });
+  };
+};
+
+export const updateExpense = (options) => {
+  return async (dispatch, getState) => {
+    dispatch(uiStartLoading(EXPENSE_CREATING));
+    const token = await dispatch(checkAuthenticated());
+    const { couple } = getState().couple;
+    const body = makeExpense({
+      ...options,
+      couple,
+    });
+    try {
+      const updatedExpense = await updateExpenseAPI(token, body);
+      dispatch({
+        type: EXPENSE_UPDATE_EXPENSE,
+        updatedExpense,
+      });
+      dispatch(uiStopLoading(EXPENSE_CREATING));
+    } catch (e) {
+      console.log(e);
+      dispatch(uiStopLoading(EXPENSE_CREATING));
+    }
   };
 };
 
