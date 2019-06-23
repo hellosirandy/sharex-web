@@ -8,7 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { compose } from 'recompose';
 import styles from './styles';
 import { validate, validateForm } from '../../utils/validation';
-import { createExpense } from '../../store/actions/expense';
+import { createExpense, updateExpense, setUpdating } from '../../store/actions/expense';
 import { EXPENSE_CREATING } from '../../store/loadingTypes';
 
 const categories = [
@@ -64,50 +64,53 @@ const initialState = {
     },
   },
   errMsg: '',
-  status: 'create',
 };
 class NewExpenseForm extends React.PureComponent {
   state = initialState;
   componentDidUpdate(prevProps) {
     const { updating, expenseTable } = this.props;
     if (prevProps.updating !== updating) {
-      const expense = expenseTable[updating];
-      this.setState(prevState => ({
-        ...prevState,
-        controls: {
-          ...prevState.controls,
-          title: {
-            ...prevState.controls.title,
-            value: expense.title,
-            valid: validate(expense.title, prevState.controls.title.validationRules),
+      if (updating) {
+        const expense = expenseTable[updating];
+        this.setState(prevState => ({
+          ...prevState,
+          controls: {
+            ...prevState.controls,
+            title: {
+              ...prevState.controls.title,
+              value: expense.title,
+              valid: validate(expense.title, prevState.controls.title.validationRules),
+            },
+            total: {
+              ...prevState.controls.total,
+              value: expense.total,
+              valid: validate(expense.total, prevState.controls.total.validationRules),
+            },
+            paid: {
+              ...prevState.controls.paid,
+              value: expense.paid,
+              valid: validate(expense.paid, prevState.controls.paid.validationRules),
+            },
+            shouldPay: {
+              ...prevState.controls.shouldPay,
+              value: expense.shouldPay,
+              valid: validate(expense.shouldPay, prevState.controls.shouldPay.validationRules),
+            },
+            date: {
+              ...prevState.controls.date,
+              value: expense.date,
+              valid: validate(expense.date, prevState.controls.date.validationRules),
+            },
+            category: {
+              ...prevState.controls.category,
+              value: expense.category,
+              valid: validate(expense.category, prevState.controls.category.validationRules),
+            },
           },
-          total: {
-            ...prevState.controls.total,
-            value: expense.total,
-            valid: validate(expense.total, prevState.controls.total.validationRules),
-          },
-          paid: {
-            ...prevState.controls.paid,
-            value: expense.paid,
-            valid: validate(expense.paid, prevState.controls.paid.validationRules),
-          },
-          shouldPay: {
-            ...prevState.controls.shouldPay,
-            value: expense.shouldPay,
-            valid: validate(expense.shouldPay, prevState.controls.shouldPay.validationRules),
-          },
-          date: {
-            ...prevState.controls.date,
-            value: expense.date,
-            valid: validate(expense.date, prevState.controls.date.validationRules),
-          },
-          category: {
-            ...prevState.controls.category,
-            value: expense.category,
-            valid: validate(expense.category, prevState.controls.category.validationRules),
-          },
-        },
-      }));
+        }));
+      } else {
+        this.setState(initialState);
+      }
     }
   }
   handleInputChange = key => ({ target: { value } }) => {
@@ -132,14 +135,30 @@ class NewExpenseForm extends React.PureComponent {
           title, total, paid, shouldPay, date, category,
         },
       } = this.state;
-      await this.props.onCreateExpense({
-        title: title.value,
-        total: Number(total.value),
-        paid: Number(paid.value),
-        shouldPay: Number(shouldPay.value),
-        date: new Date(date.value).getTime(),
-        category: category.value,
-      });
+      const {
+        onCreateExpense, onUpdateExpense, onSetUpdating, updating,
+      } = this.props;
+      if (updating) {
+        await onUpdateExpense({
+          title: title.value,
+          total: Number(total.value),
+          paid: Number(paid.value),
+          shouldPay: Number(shouldPay.value),
+          date: new Date(date.value).getTime(),
+          expenseId: updating,
+          category: category.value,
+        });
+        onSetUpdating('');
+      } else {
+        await onCreateExpense({
+          title: title.value,
+          total: Number(total.value),
+          paid: Number(paid.value),
+          shouldPay: Number(shouldPay.value),
+          date: new Date(date.value).getTime(),
+          category: category.value,
+        });
+      }
       this.setState(initialState);
     } catch (e) {
       this.setState({ errMsg: e });
@@ -152,7 +171,21 @@ class NewExpenseForm extends React.PureComponent {
       },
       errMsg,
     } = this.state;
-    const { isLoading } = this.props;
+    const { isLoading, updating } = this.props;
+    const buttons = updating ? (
+      <React.Fragment>
+        <Button variant="secondary" block>Cancel</Button>
+        <Button variant="success" block type="submit" onClick={this.handleSubmitPress}>
+          {!isLoading && 'Update'}
+          {isLoading && <Spinner animation="border" role="status" size="sm" />}
+        </Button>
+      </React.Fragment>
+    ) : (
+      <Button variant="primary" block type="submit" onClick={this.handleSubmitPress}>
+        {!isLoading && 'Submit'}
+        {isLoading && <Spinner animation="border" role="status" size="sm" />}
+      </Button>
+    );
     return (
       <div style={styles.container}>
         <h4 style={styles.heading}>
@@ -217,10 +250,7 @@ class NewExpenseForm extends React.PureComponent {
             placeholderText="Date"
           />
         </Form.Group>
-        <Button variant="primary" block type="submit" onClick={this.handleSubmitPress}>
-          {!isLoading && 'Submit'}
-          {isLoading && <Spinner animation="border" role="status" size="sm" />}
-        </Button>
+        {buttons}
       </div>
     );
   }
@@ -231,6 +261,8 @@ NewExpenseForm.propTypes = {
   onCreateExpense: PropTypes.func.isRequired,
   expenseTable: PropTypes.object.isRequired,
   updating: PropTypes.string.isRequired,
+  onUpdateExpense: PropTypes.func.isRequired,
+  onSetUpdating: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -244,6 +276,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onCreateExpense: options => dispatch(createExpense(options)),
+    onUpdateExpense: options => dispatch(updateExpense(options)),
+    onSetUpdating: id => dispatch(setUpdating(id)),
   };
 };
 

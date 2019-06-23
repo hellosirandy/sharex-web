@@ -12,7 +12,12 @@ export const createExpenseAPI = (token, body) => {
 };
 
 export const updateExpenseAPI = (token, body) => {
-  return api.put('/couple/expense', token, body);
+  const options = {
+    endpoint: '/couple/expense',
+    token,
+    body,
+  };
+  return api.put(options);
 };
 
 export const deleteExpenseAPI = (token, expenseId) => {
