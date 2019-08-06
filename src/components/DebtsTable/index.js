@@ -6,6 +6,7 @@ import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { deleteExpense, setUpdating } from '../../store/actions/expense';
+import styles from './styles';
 
 const columns = [{
   dataField: 'id',
@@ -55,11 +56,17 @@ class DebtsTable extends React.PureComponent {
     };
     return (
       <React.Fragment>
-        <ButtonToolbar style={{ paddingTop: 10, paddingBottom: 10 }}>
+        <ButtonToolbar style={styles.toolBar}>
           <Button disabled={!this.state.selected} className="mr-2" variant="primary" size="sm" onClick={this.handleEditClick}>Edit</Button>
           <Button disabled={!this.state.selected} className="mr-2" variant="danger" size="sm" onClick={this.handleDeleteClick}>Delete</Button>
+          <div style={styles.balanceWrapper}>
+            <h5 style={styles.balanceText}>Your balance is {this.props.balance}</h5>
+          </div>
+
         </ButtonToolbar>
-        <BootstrapTable striped keyField="id" columns={columns} data={this.props.expenses} selectRow={selectRow} />
+        <div style={styles.table}>
+          <BootstrapTable striped keyField="id" columns={columns} data={this.props.expenses} selectRow={selectRow} />
+        </div>
         <Modal show={this.state.showDeleteModal} onHide={this.handleModalClose}>
           <Modal.Header closeButton>
             <Modal.Title>Watch out!</Modal.Title>
@@ -83,6 +90,13 @@ DebtsTable.propTypes = {
   expenses: PropTypes.array.isRequired,
   onDeleteExpense: PropTypes.func.isRequired,
   onSetUpdating: PropTypes.func.isRequired,
+  balance: PropTypes.number.isRequired,
+};
+
+const mapStateToProps = (state) => {
+  return {
+    balance: state.expense.balance,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -92,4 +106,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(connect(null, mapDispatchToProps))(DebtsTable);
+export default compose(connect(mapStateToProps, mapDispatchToProps))(DebtsTable);

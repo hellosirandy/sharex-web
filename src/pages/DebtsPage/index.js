@@ -22,10 +22,10 @@ class DebtsPage extends React.PureComponent {
         <NavBar />
         <Container fluid>
           <Row>
-            <Col sm="3" style={styles.col}>
+            <Col sm="3" style={styles.leftCol}>
               <NewExpenseForm />
             </Col>
-            <Col style={{ ...styles.col, padding: 0 }}>
+            <Col>
               <DebtsTable expenses={expenses} />
             </Col>
           </Row>
