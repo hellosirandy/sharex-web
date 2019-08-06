@@ -72,6 +72,7 @@ class NewExpenseForm extends React.PureComponent {
     if (prevProps.updating !== updating) {
       if (updating) {
         const expense = expenseTable[updating];
+        expense.createdAt = moment(expense.createdAt).format('MM/DD/YYYY');
         this.setState(prevState => ({
           ...prevState,
           controls: {
@@ -98,8 +99,8 @@ class NewExpenseForm extends React.PureComponent {
             },
             date: {
               ...prevState.controls.date,
-              value: expense.date,
-              valid: validate(expense.date, prevState.controls.date.validationRules),
+              value: expense.createdAt,
+              valid: validate(expense.createdAt, prevState.controls.date.validationRules),
             },
             category: {
               ...prevState.controls.category,
@@ -148,7 +149,7 @@ class NewExpenseForm extends React.PureComponent {
           expenseId: updating,
           category: category.value,
         });
-        onSetUpdating('');
+        onSetUpdating(0);
       } else {
         await onCreateExpense({
           title: title.value,
@@ -164,6 +165,9 @@ class NewExpenseForm extends React.PureComponent {
       this.setState({ errMsg: e });
     }
   }
+  handleCancelClick = () => {
+    this.props.onSetUpdating(0);
+  }
   render() {
     const {
       controls: {
@@ -174,7 +178,7 @@ class NewExpenseForm extends React.PureComponent {
     const { isLoading, updating } = this.props;
     const buttons = updating ? (
       <React.Fragment>
-        <Button variant="secondary" block>Cancel</Button>
+        <Button variant="secondary" block onClick={this.handleCancelClick}>Cancel</Button>
         <Button variant="success" block type="submit" onClick={this.handleSubmitPress}>
           {!isLoading && 'Update'}
           {isLoading && <Spinner animation="border" role="status" size="sm" />}
@@ -260,7 +264,7 @@ NewExpenseForm.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   onCreateExpense: PropTypes.func.isRequired,
   expenseTable: PropTypes.object.isRequired,
-  updating: PropTypes.string.isRequired,
+  updating: PropTypes.number.isRequired,
   onUpdateExpense: PropTypes.func.isRequired,
   onSetUpdating: PropTypes.func.isRequired,
 };

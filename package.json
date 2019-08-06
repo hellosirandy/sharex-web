@@ -9,6 +9,7 @@
     "aws-amplify": "^1.1.28",
     "babel-preset-react-app": "^7.0.0",
     "bootstrap": "^4.3.1",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
@@ -39,7 +40,7 @@
     "webpack": "4.29.6"
   },
   "scripts": {
-    "start": "REACT_APP_ENV=dev REACT_APP_URL=https://j5haq78dsa.execute-api.us-east-1.amazonaws.com/dev react-scripts start",
+    "start": "REACT_APP_ENV=dev REACT_APP_URL=http://ec2-34-238-42-253.compute-1.amazonaws.com:3000 react-scripts start",
     "build": "REACT_APP_ENV=dev REACT_APP_URL=https://j5haq78dsa.execute-api.us-east-1.amazonaws.com/dev react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

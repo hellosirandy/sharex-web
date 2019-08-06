@@ -1,5 +1,5 @@
 import { getExpenseAPI, createExpenseAPI, deleteExpenseAPI, updateExpenseAPI } from '../../apis/expense';
-import { checkAuthenticated } from './auth';
+import { getToken } from './auth';
 import { uiStartLoading, uiStopLoading } from './ui';
 import { EXPENSE_GETTING, EXPENSE_CREATING, EXPENSE_DELETING } from '../loadingTypes';
 import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE, EXPENSE_SET_UPDATE, EXPENSE_UPDATE_EXPENSE } from '../actionTypes';
@@ -7,12 +7,19 @@ import { EXPENSE_SET_EXPENSE, EXPENSE_APPEND_EXPENSE, EXPENSE_DELETE_EXPENSE, EX
 export const createExpense = (options) => {
   return async (dispatch, getState) => {
     dispatch(uiStartLoading(EXPENSE_CREATING));
-    const token = await dispatch(checkAuthenticated());
-    const { couple } = getState().couple;
-    const body = makeExpense({
-      ...options,
-      couple,
-    });
+    let token;
+    let body;
+    try {
+      token = await dispatch(getToken());
+      const { couple } = getState().couple;
+      body = makeExpense({
+        ...options,
+        couple,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
     try {
       const newExpense = await createExpenseAPI(token, body);
       dispatch(appendExpense(newExpense));
@@ -27,7 +34,7 @@ export const createExpense = (options) => {
 export const getExpense = () => {
   return async (dispatch) => {
     dispatch(uiStartLoading(EXPENSE_GETTING));
-    const token = await dispatch(checkAuthenticated());
+    const token = await dispatch(getToken());
     try {
       const expenses = await getExpenseAPI(token);
       let total = 0;
@@ -37,7 +44,7 @@ export const getExpense = () => {
         expenseTable[expense.id] = expense;
       });
       const expenseIds = expenses.map(expense => expense.id);
-      dispatch(setExpense(expenseIds.reverse(), expenseTable, parseFloat(total.toFixed(3))));
+      dispatch(setExpense(expenseIds, expenseTable, parseFloat(total.toFixed(3))));
       dispatch(uiStopLoading(EXPENSE_GETTING));
     } catch (e) {
       dispatch(uiStopLoading(EXPENSE_GETTING));
@@ -48,7 +55,7 @@ export const getExpense = () => {
 
 export const deleteExpense = (expenseId) => {
   return async (dispatch, getState) => {
-    const token = await dispatch(checkAuthenticated());
+    const token = await dispatch(getToken());
     dispatch(uiStartLoading(EXPENSE_DELETING));
     try {
       await deleteExpenseAPI(token, expenseId);
@@ -80,14 +87,14 @@ export const setUpdating = (expenseId) => {
 export const updateExpense = (options) => {
   return async (dispatch, getState) => {
     dispatch(uiStartLoading(EXPENSE_CREATING));
-    const token = await dispatch(checkAuthenticated());
+    const token = await dispatch(getToken());
     const { couple } = getState().couple;
     const body = makeExpense({
       ...options,
       couple,
     });
     try {
-      const updatedExpense = await updateExpenseAPI(token, body);
+      const updatedExpense = await updateExpenseAPI(token, options.expenseId, body);
       dispatch({
         type: EXPENSE_UPDATE_EXPENSE,
         updatedExpense,
@@ -111,7 +118,7 @@ const setExpense = (expenseIds, expenseTable, total) => {
 
 const makeExpense = (options) => {
   const {
-    couple, paid, shouldPay, total, title, date, expenseId, category,
+    couple, paid, shouldPay, total, title, date, category,
   } = options;
   const data = {
     [couple.you.email]: {
@@ -128,7 +135,6 @@ const makeExpense = (options) => {
     coupleId: couple.id,
     date,
     data,
-    expenseId,
     category,
   };
 };

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import AuthPage from './pages/AuthPage';
-import { checkAuthenticated } from './store/actions/auth';
+import { getToken } from './store/actions/auth';
 import HomePage from './pages/HomePage';
 import DebtsPage from './pages/DebtsPage';
 import { getCouple } from './store/actions/couple';
@@ -93,7 +93,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onGetCouple: () => dispatch(getCouple()),
-    onCheckAuthenticated: () => dispatch(checkAuthenticated()),
+    onCheckAuthenticated: () => dispatch(getToken()),
     onGetExpense: () => dispatch(getExpense()),
   };
 };
