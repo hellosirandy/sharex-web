@@ -36,15 +36,13 @@ export const getExpense = () => {
     dispatch(uiStartLoading(EXPENSE_GETTING));
     const token = await dispatch(getToken());
     try {
-      const expenses = await getExpenseAPI(token);
-      let total = 0;
+      const { expenses, balance } = await getExpenseAPI(token);
       const expenseTable = {};
       expenses.forEach((expense) => {
-        total += expense.paid - expense.shouldPay;
         expenseTable[expense.id] = expense;
       });
       const expenseIds = expenses.map(expense => expense.id);
-      dispatch(setExpense(expenseIds, expenseTable, parseFloat(total.toFixed(3))));
+      dispatch(setExpense(expenseIds, expenseTable, parseFloat(balance.toFixed(3))));
       dispatch(uiStopLoading(EXPENSE_GETTING));
     } catch (e) {
       dispatch(uiStopLoading(EXPENSE_GETTING));
@@ -107,12 +105,12 @@ export const updateExpense = (options) => {
   };
 };
 
-const setExpense = (expenseIds, expenseTable, total) => {
+const setExpense = (expenseIds, expenseTable, balance) => {
   return {
     type: EXPENSE_SET_EXPENSE,
     expenseIds,
     expenseTable,
-    total,
+    balance,
   };
 };
 
