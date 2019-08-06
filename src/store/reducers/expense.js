@@ -4,7 +4,7 @@ const initialState = {
   expenseIds: [],
   expenseTable: {},
   total: 0,
-  updating: '',
+  updating: 0,
 };
 
 const reducer = (state = initialState, action) => {

@@ -1,5 +1,12 @@
 import Amplify, { Auth } from 'aws-amplify';
 
+// export const signInAPI = async (email: string, password: string) => {
+//   const user = await Auth.signIn(email, password);
+//   return user.signInUserSession.getIdToken().getJwtToken();
+// };
+
+import API from '@hellosirandy/rest-api-wrapper';
+
 const poolDatas = {
   dev: {
     userPoolId: 'us-east-1_rnZDON91V',
@@ -38,8 +45,24 @@ export const signUpAPI = (email: string, password: string) => {
   });
 };
 
-export const signInAPI = async (email: string, password: string) => {
-  const user = await Auth.signIn(email, password);
-  return user.signInUserSession.getIdToken().getJwtToken();
+const api = new API(process.env.REACT_APP_URL);
+
+export const signInAPI = (body) => {
+  const options = {
+    endpoint: '/auth/signin',
+    body,
+  };
+  return api.post(options);
+};
+
+export const refreshTokenAPI = (token, refreshToken) => {
+  const options = {
+    endpoint: '/auth/refresh',
+    body: {
+      token,
+      refreshToken,
+    },
+  };
+  return api.post(options);
 };
 

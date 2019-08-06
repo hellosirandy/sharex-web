@@ -14,7 +14,7 @@ class DebtsPage extends React.PureComponent {
     const { expenseIds, expenseTable } = this.props;
     const expenses = expenseIds.map(id => ({
       ...expenseTable[id],
-      date: moment.utc(expenseTable[id].date).local().format('MM/DD/YYYY'),
+      date: moment.utc(expenseTable[id].createdAt).local().format('MM/DD/YYYY'),
       debt: expenseTable[id].paid - expenseTable[id].shouldPay,
     }));
     return (

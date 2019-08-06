@@ -1,12 +1,16 @@
 import { getCoupleAPI } from '../../apis/couple';
-import { checkAuthenticated } from './auth';
+import { getToken } from './auth';
 import { COUPLE_SET_COUPLE } from '../actionTypes';
 
 export const getCouple = () => {
   return async (dispatch) => {
-    const token = await dispatch(checkAuthenticated());
-    const couple = await getCoupleAPI(token);
-    dispatch(setCouple(couple));
+    try {
+      const token = await dispatch(getToken());
+      const couple = await getCoupleAPI(token);
+      dispatch(setCouple(couple));
+    } catch (e) {
+      console.log(e);
+    }
   };
 };
 

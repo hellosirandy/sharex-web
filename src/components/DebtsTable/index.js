@@ -59,7 +59,7 @@ class DebtsTable extends React.PureComponent {
           <Button disabled={!this.state.selected} className="mr-2" variant="primary" size="sm" onClick={this.handleEditClick}>Edit</Button>
           <Button disabled={!this.state.selected} className="mr-2" variant="danger" size="sm" onClick={this.handleDeleteClick}>Delete</Button>
         </ButtonToolbar>
-        <BootstrapTable keyField="id" columns={columns} data={this.props.expenses} selectRow={selectRow} />
+        <BootstrapTable striped keyField="id" columns={columns} data={this.props.expenses} selectRow={selectRow} />
         <Modal show={this.state.showDeleteModal} onHide={this.handleModalClose}>
           <Modal.Header closeButton>
             <Modal.Title>Watch out!</Modal.Title>

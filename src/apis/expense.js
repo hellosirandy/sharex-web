@@ -4,16 +4,16 @@ const api = new API(process.env.REACT_APP_URL);
 
 export const createExpenseAPI = (token, body) => {
   const options = {
-    endpoint: '/couple/expense',
+    endpoint: '/expense',
     token,
     body,
   };
   return api.post(options);
 };
 
-export const updateExpenseAPI = (token, body) => {
+export const updateExpenseAPI = (token, expenseId, body) => {
   const options = {
-    endpoint: '/couple/expense',
+    endpoint: `/expense/${expenseId}`,
     token,
     body,
   };
@@ -22,18 +22,15 @@ export const updateExpenseAPI = (token, body) => {
 
 export const deleteExpenseAPI = (token, expenseId) => {
   const options = {
-    endpoint: '/couple/expense',
+    endpoint: `/expense/${expenseId}`,
     token,
-    params: {
-      expenseId,
-    },
   };
   return api.delete(options);
 };
 
 export const getExpenseAPI = (token) => {
   const options = {
-    endpoint: '/couple/expense',
+    endpoint: '/expense',
     token,
   };
   return api.get(options);
