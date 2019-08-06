@@ -41,7 +41,7 @@
   },
   "scripts": {
     "start": "REACT_APP_ENV=dev REACT_APP_URL=http://ec2-34-238-42-253.compute-1.amazonaws.com:3000 react-scripts start",
-    "build": "REACT_APP_ENV=dev REACT_APP_URL=https://j5haq78dsa.execute-api.us-east-1.amazonaws.com/dev react-scripts build",
+    "build": "REACT_APP_ENV=dev REACT_APP_URL=http://ec2-34-238-42-253.compute-1.amazonaws.com:3000 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "aws s3 cp build s3://sharex-dev/ --recursive"
