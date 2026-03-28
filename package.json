@@ -6,7 +6,7 @@
     "@hellosirandy/rest-api-wrapper": "^3.2.1",
     "@material-ui/core": "^4.0.2",
     "@material-ui/icons": "^4.0.1",
-    "aws-amplify": "^1.1.28",
+    "aws-amplify": "^6.16.2",
     "babel-preset-react-app": "^7.0.0",
     "bootstrap": "^4.3.1",
     "lodash": "^4.17.13",
